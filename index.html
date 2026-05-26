@@ -169,7 +169,7 @@ input:focus,select:focus{outline:none;border-color:var(--blue);}
         <option value="neu">📌 中性</option>
       </select>
     </div>
-    <button class="btn btn-green btn-sm" id="btnExcel">⬇ 匯出 Excel</button>
+    <button class="btn btn-green btn-sm" id="btnExcel">⬇ 匯出 CSV（Excel可開）</button>
   </div>
   <div id="rlist"></div>
 </div>
@@ -251,7 +251,6 @@ input:focus,select:focus{outline:none;border-color:var(--blue);}
 
 <div id="toast"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 // ═══════════════════════════════
 // DATA
@@ -699,6 +698,40 @@ function showToast(msg) {
   el.textContent=msg; el.classList.add('show');
   setTimeout(function(){el.classList.remove('show');},2200);
 }
+
+
+// ═══════════════════════════════
+// EXPORT CSV (works without CDN)
+// ═══════════════════════════════
+document.getElementById('btnExcel').addEventListener('click', function(){
+  if(!records.length){ showToast('沒有資料可匯出'); return; }
+  var BOM = '\uFEFF'; // UTF-8 BOM for Excel to read Chinese correctly
+  var rows = [['日期','星期','時間','學生','行為標籤','類型','備註']];
+  records.forEach(function(r){
+    var d = new Date(r.ts);
+    var dateStr = d.toLocaleDateString('zh-TW');
+    var wd = '週'+(r.wd||WD[d.getDay()]);
+    var timeStr = d.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
+    var tagNames = r.tags.map(function(id){ var t=tags.find(function(x){return x.id===id;}); return t?t.name:''; }).filter(Boolean).join('、');
+    var typeLabel = r.mt==='pos'?'正向':r.mt==='neg'?'負向':'中性';
+    rows.push([dateStr, wd, timeStr, r.stu, tagNames, typeLabel, r.note||'']);
+  });
+  var csv = BOM + rows.map(function(row){
+    return row.map(function(cell){
+      var s = String(cell).replace(/"/g,'""');
+      return '"'+s+'"';
+    }).join(',');
+  }).join('\n');
+  var now = new Date();
+  function p(x){return String(x).padStart(2,'0');}
+  var fname = '學生記錄_'+now.getFullYear()+p(now.getMonth()+1)+p(now.getDate())+'.csv';
+  var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a'); a.href=url; a.download=fname;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('✅ CSV 已下載（可用 Excel 開啟）');
+});
 
 // ═══════════════════════════════
 // INIT
