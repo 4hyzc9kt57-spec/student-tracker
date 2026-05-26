@@ -6,99 +6,124 @@
 <title>學生行為記錄器</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#1a1a2e;--paper:#f5f0e8;--cream:#ede8dc;--red:#c0392b;--blue:#2980b9;--green:#27ae60;--border:#b8b0a0;--card:#fdfaf4;--shadow:rgba(26,26,46,0.12);}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Noto Sans TC',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;padding-bottom:80px;}
-header{background:var(--ink);color:var(--paper);padding:14px 16px 12px;position:sticky;top:0;z-index:100;border-bottom:3px solid var(--red);display:flex;justify-content:space-between;align-items:flex-start;}
-header h1{font-size:17px;font-weight:900;}
-header .logo{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--red);margin-bottom:3px;}
-.hdate{text-align:right;font-family:'Space Mono',monospace;}
-.hdate .wd{font-size:22px;font-weight:700;color:var(--red);line-height:1;}
-.hdate .dt{font-size:10px;color:#aaa;margin-top:1px;}
+:root{
+  --ink:#1a1a2e;--paper:#f5f0e8;--cream:#ede8dc;
+  --red:#c0392b;--blue:#2980b9;--green:#27ae60;
+  --border:#b8b0a0;--card:#fdfaf4;
+}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;padding-bottom:60px;}
+
+/* header */
+header{background:var(--ink);color:var(--paper);padding:14px 16px;position:sticky;top:0;z-index:100;border-bottom:3px solid var(--red);display:flex;justify-content:space-between;align-items:center;}
+.logo{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--red);}
+h1{font-size:17px;font-weight:900;margin-top:2px;}
+.hright{text-align:right;font-family:'Space Mono',monospace;}
+.hwd{font-size:20px;font-weight:700;color:var(--red);line-height:1;}
+.hdt{font-size:10px;color:#aaa;}
+
+/* tabs */
 .tabs{display:flex;background:var(--cream);border-bottom:2px solid var(--border);}
-.tab{flex:1;padding:11px 4px;text-align:center;font-size:12px;font-weight:500;color:#888;border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;}
+.tab{flex:1;padding:11px 2px;text-align:center;font-size:12px;font-weight:500;color:#888;border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;}
 .tab.active{color:var(--ink);border-bottom-color:var(--red);background:var(--paper);font-weight:700;}
+
+/* sections */
 .sec{display:none;padding:14px;}
-.sec.on{display:block;}
-.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;box-shadow:0 2px 8px var(--shadow);}
-.ctitle{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--red);margin-bottom:12px;}
-/* grid */
-.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:4px;}
-.sblock{position:relative;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:10px 6px 8px;text-align:center;cursor:pointer;box-shadow:0 2px 6px var(--shadow);-webkit-tap-highlight-color:transparent;transition:transform .15s;}
-.sblock:active{transform:scale(0.92);}
-.snum{font-family:'Space Mono',monospace;font-size:9px;color:#bbb;position:absolute;top:5px;left:7px;}
-.sname{font-size:13px;font-weight:700;line-height:1.2;margin-top:2px;}
-.sbadge{display:inline-block;margin-top:5px;font-size:10px;font-family:'Space Mono',monospace;padding:1px 6px;border-radius:8px;background:var(--cream);color:#999;}
-.sdot{width:7px;height:7px;border-radius:50%;position:absolute;top:6px;right:7px;}
-.sblock.gpos{border-color:var(--blue);}
-.sblock.gpos .sdot{background:var(--green);}
-.sblock.gneg .sdot{background:var(--red);}
-.sblock.gpos .sbadge{background:#eafaf1;color:var(--green);}
-.sblock.gneg .sbadge{background:#fdf0ed;color:var(--red);}
+.sec.show{display:block;}
+
+/* card */
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);}
+.ctitle{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--red);margin-bottom:12px;}
+
+/* student grid */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.scard{position:relative;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:10px 5px 8px;text-align:center;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,0.07);}
+.scard:active{opacity:0.7;}
+.sno{position:absolute;top:4px;left:6px;font-family:'Space Mono',monospace;font-size:8px;color:#ccc;}
+.sdot{position:absolute;top:5px;right:6px;width:7px;height:7px;border-radius:50%;}
+.sname{font-size:13px;font-weight:700;margin-top:4px;line-height:1.2;}
+.scnt{display:inline-block;margin-top:5px;font-size:10px;font-family:'Space Mono',monospace;padding:1px 6px;border-radius:8px;background:var(--cream);color:#aaa;}
+.scard.hasneg{border-color:#e8a89f;} .scard.hasneg .sdot{background:var(--red);}
+.scard.haspos{border-color:#a9dfbf;} .scard.haspos .sdot{background:var(--green);}
+.scard.haspos .scnt{background:#eafaf1;color:var(--green);}
+.scard.hasneg .scnt{background:#fdf0ed;color:var(--red);}
+
 /* modal */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:flex-end;}
-.overlay.on{display:flex;}
-.modal{background:var(--paper);border-radius:18px 18px 0 0;padding:20px 16px 36px;width:100%;max-height:88vh;overflow-y:auto;animation:up .25s ease;}
-@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.mhandle{width:40px;height:4px;background:#ccc;border-radius:2px;margin:0 auto 16px;}
-.mname{font-size:20px;font-weight:900;margin-bottom:2px;}
-.msub{font-size:12px;color:#aaa;margin-bottom:16px;font-family:'Space Mono',monospace;}
-.mlabel{font-size:12px;font-weight:700;color:#888;margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase;}
-/* tags */
-.tagwrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
-.btag{padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .15s;user-select:none;}
-.btag.pos{background:#eafaf1;color:var(--green);border-color:#a9dfbf;}
-.btag.neg{background:#fdf0ed;color:var(--red);border-color:#f5c6bb;}
-.btag.neu{background:#eaf4fb;color:var(--blue);border-color:#aed6f1;}
-.btag.on.pos{background:#a9dfbf;}
-.btag.on.neg{background:#f5c6bb;}
-.btag.on.neu{background:#aed6f1;}
-textarea,input[type=datetime-local],input[type=text],select{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Noto Sans TC',sans-serif;font-size:14px;background:#fff;color:var(--ink);outline:none;margin-bottom:12px;}
-textarea{resize:vertical;min-height:70px;}
-input:focus,textarea:focus,select:focus{border-color:var(--blue);}
-.btn{width:100%;padding:13px;border:none;border-radius:9px;font-size:15px;font-weight:700;font-family:'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:.5px;}
-.bprimary{background:var(--ink);color:var(--paper);}
-.bred{background:var(--red);color:#fff;}
-.bgreen{background:var(--green);color:#fff;}
-.boutline{background:transparent;border:1.5px solid var(--border);color:#666;}
-.bsm{width:auto;padding:7px 13px;font-size:12px;border-radius:7px;font-weight:700;}
-.brow{display:flex;gap:8px;margin-top:6px;}
-.brow .btn{flex:1;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;align-items:flex-end;}
+.overlay.show{display:flex;}
+.modal{background:var(--paper);border-radius:18px 18px 0 0;padding:20px 16px 40px;width:100%;max-height:85vh;overflow-y:auto;}
+.drag{width:36px;height:4px;background:#ccc;border-radius:2px;margin:0 auto 16px;}
+.mstudent{font-size:22px;font-weight:900;margin-bottom:2px;}
+.mno{font-size:12px;color:#aaa;margin-bottom:16px;}
+.mlabel{font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#999;margin-bottom:6px;}
+.tagrow{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.tag{padding:7px 13px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid transparent;}
+.tag.pos{background:#eafaf1;color:var(--green);border-color:#a9dfbf;}
+.tag.neg{background:#fdf0ed;color:var(--red);border-color:#f5c6bb;}
+.tag.neu{background:#eaf4fb;color:var(--blue);border-color:#aed6f1;}
+.tag.sel.pos{background:#a9dfbf;}
+.tag.sel.neg{background:#f5c6bb;}
+.tag.sel.neu{background:#aed6f1;}
+textarea{width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:'Noto Sans TC',sans-serif;font-size:14px;resize:vertical;min-height:65px;margin-bottom:12px;background:#fff;}
+textarea:focus{outline:none;border-color:var(--blue);}
+input[type=datetime-local],input[type=text],select{width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:'Noto Sans TC',sans-serif;font-size:14px;background:#fff;margin-bottom:10px;}
+input:focus,select:focus{outline:none;border-color:var(--blue);}
+.wdshow{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:var(--blue);margin:-4px 0 12px;}
+
+/* buttons */
+.btn{display:block;width:100%;padding:13px;border:none;border-radius:9px;font-size:15px;font-weight:700;font-family:'Noto Sans TC',sans-serif;cursor:pointer;text-align:center;}
+.btn:active{opacity:0.8;}
+.btn-dark{background:var(--ink);color:#fff;}
+.btn-red{background:var(--red);color:#fff;}
+.btn-green{background:var(--green);color:#fff;}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:#666;}
+.btn-sm{width:auto;display:inline-block;padding:7px 14px;font-size:12px;border-radius:7px;}
+.btnrow{display:flex;gap:8px;margin-top:8px;}
+.btnrow .btn{flex:1;}
+
 /* records */
-.ritem{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--border);border-radius:8px;padding:11px 14px;margin-bottom:9px;position:relative;}
-.ritem.pos{border-left-color:var(--green);}
-.ritem.neg{border-left-color:var(--red);}
-.ritem.neu{border-left-color:var(--blue);}
-.rmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.rcard{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--border);border-radius:8px;padding:11px 12px;margin-bottom:8px;position:relative;}
+.rcard.pos{border-left-color:var(--green);}
+.rcard.neg{border-left-color:var(--red);}
+.rcard.neu{border-left-color:var(--blue);}
+.rmeta{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px;}
 .rname{font-weight:700;font-size:14px;}
-.rtime{font-size:10px;color:#999;font-family:'Space Mono',monospace;text-align:right;line-height:1.5;}
-.rtags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:5px;}
+.rtime{font-size:10px;color:#aaa;font-family:'Space Mono',monospace;text-align:right;white-space:pre-line;}
+.rtags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px;}
 .rtag{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;}
 .rtag.pos{background:#eafaf1;color:var(--green);}
 .rtag.neg{background:#fdf0ed;color:var(--red);}
 .rtag.neu{background:#eaf4fb;color:var(--blue);}
 .rnote{font-size:12px;color:#666;line-height:1.5;}
-.rdel{position:absolute;top:9px;right:9px;background:none;border:none;font-size:15px;cursor:pointer;color:#ddd;padding:4px;}
+.rdel{position:absolute;top:8px;right:8px;background:none;border:none;font-size:16px;color:#ddd;cursor:pointer;padding:2px 6px;}
+.rdel:active{color:var(--red);}
+.dgroup{font-family:'Space Mono',monospace;font-size:10px;color:#aaa;letter-spacing:1px;padding:8px 0 4px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+
 /* stats */
-.srow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--cream);font-size:13px;}
-.srow:last-child{border-bottom:none;}
-.sval{font-family:'Space Mono',monospace;font-weight:700;font-size:15px;}
-.sg{color:var(--green);}.sr{color:var(--red);}.sb{color:var(--blue);}
-.bwrap{background:#e8e2d8;border-radius:6px;height:7px;margin-top:3px;}
-.bar{height:7px;border-radius:6px;}
-/* filter */
-.fbar{display:flex;gap:8px;margin-bottom:12px;}
-.fbar select{margin-bottom:0;flex:1;}
-/* date group */
-.dglabel{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;color:#aaa;text-transform:uppercase;padding:8px 0 4px;border-bottom:1px solid var(--border);margin-bottom:8px;}
-.empty{text-align:center;padding:40px 20px;color:#ccc;font-size:13px;}
-.empty .ei{font-size:36px;margin-bottom:8px;}
+.statrow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--cream);font-size:13px;}
+.statrow:last-child{border-bottom:none;}
+.statval{font-family:'Space Mono',monospace;font-weight:700;font-size:15px;}
+.g{color:var(--green);}.r{color:var(--red);}.b{color:var(--blue);}
+.barwrap{background:#e5e0d8;border-radius:4px;height:6px;margin-top:3px;}
+.bar{height:6px;border-radius:4px;transition:width 0.3s;}
+
 /* manage rows */
-.mrow{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--cream);}
-.mrow:last-child{border-bottom:none;}
+.mngrow{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--cream);}
+.mngrow:last-child{border-bottom:none;}
+
+/* filter */
+.frow{display:flex;gap:8px;margin-bottom:10px;}
+.frow select{flex:1;margin-bottom:0;}
+
+/* empty */
+.empty{text-align:center;padding:48px 20px;color:#ccc;font-size:13px;}
+.emptyicon{font-size:40px;margin-bottom:10px;}
+
 /* toast */
-.toast{position:fixed;bottom:85px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 22px;border-radius:30px;font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.25);z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
-.toast.on{opacity:1;}
+#toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:600;z-index:9999;opacity:0;pointer-events:none;white-space:nowrap;transition:opacity 0.25s;}
+#toast.show{opacity:1;}
+
+.hint{font-size:12px;color:#999;line-height:1.6;margin-bottom:12px;}
 </style>
 </head>
 <body>
@@ -108,251 +133,130 @@ input:focus,textarea:focus,select:focus{border-color:var(--blue);}
     <div class="logo">EDULOG</div>
     <h1>學生行為記錄器</h1>
   </div>
-  <div class="hdate">
-    <div class="wd" id="hWd"></div>
-    <div class="dt" id="hDt"></div>
+  <div class="hright">
+    <div class="hwd" id="hwd"></div>
+    <div class="hdt" id="hdt"></div>
   </div>
 </header>
 
 <div class="tabs">
-  <button class="tab active" id="tb-record" onclick="goTab('record')">🏠 學生</button>
-  <button class="tab" id="tb-list" onclick="goTab('list')">📄 紀錄</button>
-  <button class="tab" id="tb-stats" onclick="goTab('stats')">📊 統整</button>
-  <button class="tab" id="tb-settings" onclick="goTab('settings')">⚙️ 設定</button>
+  <button class="tab active" id="t-home">🏠 學生</button>
+  <button class="tab" id="t-list">📄 紀錄</button>
+  <button class="tab" id="t-stats">📊 統整</button>
+  <button class="tab" id="t-settings">⚙️ 設定</button>
 </div>
 
-<!-- RECORD -->
-<div class="sec on" id="sec-record">
+<!-- HOME -->
+<div class="sec show" id="s-home">
   <div class="card" style="padding:12px 14px;margin-bottom:10px;">
     <div style="display:flex;justify-content:space-between;align-items:center;">
       <div class="ctitle" style="margin-bottom:0;">學生列表</div>
-      <div id="todayCnt" style="font-family:'Space Mono',monospace;font-size:11px;color:#aaa;"></div>
+      <div id="todaycnt" style="font-size:11px;color:#aaa;font-family:'Space Mono',monospace;"></div>
     </div>
   </div>
-  <div class="sgrid" id="sGrid"></div>
+  <div class="grid" id="sgrid"></div>
 </div>
 
 <!-- LIST -->
-<div class="sec" id="sec-list">
-  <div class="card" style="padding:12px 14px;">
-    <div class="fbar">
-      <select id="fStu"><option value="">全部學生</option></select>
-      <select id="fType">
+<div class="sec" id="s-list">
+  <div class="card" style="padding:12px;">
+    <div class="frow">
+      <select id="fstu"></select>
+      <select id="ftype">
         <option value="">所有類型</option>
         <option value="pos">✅ 正向</option>
         <option value="neg">⚠️ 負向</option>
         <option value="neu">📌 中性</option>
       </select>
     </div>
-    <button class="btn bgreen bsm" id="exportBtn">⬇ 匯出 Excel</button>
+    <button class="btn btn-green btn-sm" id="btnExcel">⬇ 匯出 Excel</button>
   </div>
-  <div id="rList"></div>
+  <div id="rlist"></div>
 </div>
 
 <!-- STATS -->
-<div class="sec" id="sec-stats">
+<div class="sec" id="s-stats">
   <div class="card"><div class="ctitle">📊 整體概覽</div><div id="ovStats"></div></div>
   <div class="card">
-    <div class="ctitle">👤 學生個別統計</div>
-    <select id="stStu" style="margin-bottom:12px;"><option value="">請選擇學生</option></select>
-    <div id="stuStats"></div>
+    <div class="ctitle">👤 學生個別</div>
+    <select id="ststu" style="margin-bottom:12px;"></select>
+    <div id="stStats"></div>
   </div>
-  <div class="card"><div class="ctitle">🏷 行為標籤排行</div><div id="tagStats"></div></div>
+  <div class="card"><div class="ctitle">🏷 標籤排行</div><div id="tagStats"></div></div>
 </div>
 
 <!-- SETTINGS -->
-<div class="sec" id="sec-settings">
+<div class="sec" id="s-settings">
+  <div class="card">
+    <div class="ctitle">☁️ 備份 / 還原</div>
+    <div class="hint">點下方按鈕下載備份檔，並上傳至 Gmail 或 Google Drive 保存。還原時選擇備份的 JSON 檔。</div>
+    <button class="btn btn-green" id="btnBackup" style="margin-bottom:8px;">📧 備份並開啟 Gmail</button>
+    <label class="btn btn-outline" style="cursor:pointer;margin-bottom:4px;">
+      ⬆ 還原備份
+      <input type="file" id="fileRestore" accept=".json" style="display:none;">
+    </label>
+    <div id="lastbackup" style="text-align:center;font-size:11px;color:#aaa;margin-top:6px;font-family:'Space Mono',monospace;"></div>
+  </div>
+
   <div class="card">
     <div class="ctitle">👨‍🎓 學生名單</div>
-    <div style="display:flex;gap:8px;margin-bottom:12px;">
-      <input type="text" id="newStuName" placeholder="新增學生姓名" style="margin-bottom:0;flex:1;">
-      <button class="btn bprimary bsm" id="addStuBtn">新增</button>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <input type="text" id="newstu" placeholder="新增學生姓名" style="margin-bottom:0;flex:1;">
+      <button class="btn btn-dark btn-sm" id="btnAddStu">新增</button>
     </div>
-    <div id="stuManage"></div>
+    <div id="stulist"></div>
   </div>
+
   <div class="card">
     <div class="ctitle">🏷 行為標籤</div>
-    <div style="display:flex;gap:8px;margin-bottom:12px;">
-      <input type="text" id="newTagName" placeholder="標籤名稱" style="margin-bottom:0;flex:1;">
-      <select id="newTagType" style="margin-bottom:0;width:90px;">
+    <div style="display:flex;gap:6px;margin-bottom:10px;">
+      <input type="text" id="newtag" placeholder="標籤名稱" style="margin-bottom:0;flex:1;">
+      <select id="newtagtype" style="margin-bottom:0;width:86px;">
         <option value="pos">✅ 正向</option>
         <option value="neg">⚠️ 負向</option>
         <option value="neu">📌 中性</option>
       </select>
-      <button class="btn bprimary bsm" id="addTagBtn">新增</button>
+      <button class="btn btn-dark btn-sm" id="btnAddTag">新增</button>
     </div>
-    <div id="tagManage"></div>
+    <div id="taglist"></div>
   </div>
-  <div class="card">
-    <div class="ctitle">☁️ Google Drive 備份</div>
-    <div style="font-size:12px;color:#888;margin-bottom:12px;line-height:1.6;">
-      點「備份並開啟 Gmail」會自動下載 JSON 檔並開啟 Gmail 草稿（收件人已預設）。將 JSON 檔附加後寄出即完成備份。還原時選擇備份的 JSON 檔即可。
-    </div>
-    <button class="btn bgreen" id="backupBtn" style="margin-bottom:8px;">📧 備份並開啟 Gmail</button>
-    <div style="position:relative;margin-bottom:8px;">
-      <button class="btn boutline" id="restoreBtn">⬆ 還原備份</button>
-      <input type="file" id="restoreFile" accept=".json" style="position:absolute;inset:0;opacity:0;cursor:pointer;">
-    </div>
-    <div id="backupInfo" style="font-family:'Space Mono',monospace;font-size:11px;color:#aaa;text-align:center;"></div>
-  </div>
+
   <div class="card">
     <div class="ctitle">🗑 資料管理</div>
-    <button class="btn bred" id="clearBtn">清除所有記錄</button>
+    <button class="btn btn-red" id="btnClear">清除所有記錄</button>
   </div>
 </div>
 
 <!-- MODAL -->
 <div class="overlay" id="overlay">
-  <div class="modal">
-    <div class="mhandle"></div>
-    <div class="mname" id="mName"></div>
-    <div class="msub" id="mSub"></div>
+  <div class="modal" id="modal">
+    <div class="drag"></div>
+    <div class="mstudent" id="mname"></div>
+    <div class="mno" id="mno"></div>
     <div class="mlabel">行為標籤（可複選）</div>
-    <div class="tagwrap" id="mTags"></div>
+    <div class="tagrow" id="mtags"></div>
     <div class="mlabel">補充說明</div>
-    <textarea id="mNote" placeholder="描述具體情況…"></textarea>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;"><div class="mlabel" style="margin-bottom:0;">日期時間</div><div id="mWdDisplay" style="font-family:'Space Mono',monospace;font-size:14px;color:var(--blue);font-weight:700;"></div></div>
-    <input type="datetime-local" id="mDate" oninput="updateWdDisplay()">
-    <div class="brow">
-      <button class="btn boutline" id="cancelBtn">取消</button>
-      <button class="btn bprimary" id="saveBtn">儲存記錄</button>
+    <textarea id="mnote" placeholder="描述具體情況…"></textarea>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <div class="mlabel" style="margin-bottom:0;">日期時間</div>
+      <div class="wdshow" id="mwd"></div>
+    </div>
+    <input type="datetime-local" id="mdate">
+    <div class="btnrow">
+      <button class="btn btn-outline" id="btnCancel">取消</button>
+      <button class="btn btn-dark" id="btnSave">儲存記錄</button>
     </div>
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div id="toast"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
-
-var backupWired = false;
-function wireBackup(){
-  if(backupWired) return;
-  backupWired = true;
-  document.getElementById('backupBtn').addEventListener('click', doBackup);
-  document.getElementById('restoreFile').addEventListener('change', function(){
-    doRestore(this.files[0]);
-    this.value = '';
-  });
-}
-
-// ── BACKUP & RESTORE ──
-function getBackupInfo(){
-  var last = ls('lastBackup', null);
-  var el = document.getElementById('backupInfo');
-  if(!el) return;
-  if(last){
-    var d = new Date(last);
-    el.textContent = '上次備份：' + d.toLocaleDateString('zh-TW') + ' ' + d.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
-  } else {
-    el.textContent = '尚未備份';
-  }
-}
-
-function doBackup(){
-  var now = new Date();
-  var pad = function(x){return String(x).padStart(2,'0');};
-  var dateStr = now.getFullYear() + pad(now.getMonth()+1) + pad(now.getDate());
-  var dateLabel = now.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric'});
-  var weekday = '週' + WD[now.getDay()];
-
-  var data = {
-    version: 1,
-    exportedAt: now.toISOString(),
-    students: students,
-    tags: tags,
-    records: records
-  };
-  var json = JSON.stringify(data, null, 2);
-
-  // 1. Download JSON file
-  var blob = new Blob([json], {type:'application/json'});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  var fname = '學生記錄備份_' + dateStr + '.json';
-  a.href = url; a.download = fname;
-  document.body.appendChild(a); a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-
-  // 2. Open Gmail compose with pre-filled content
-  var to = 'coolcooljac@gmail.com';
-  var subject = encodeURIComponent('【學生行為記錄】備份 ' + dateLabel + ' ' + weekday);
-  var body = encodeURIComponent(
-    '學生行為記錄備份
-' +
-    '備份時間：' + dateLabel + ' ' + weekday + '
-' +
-    '學生人數：' + students.length + ' 人
-' +
-    '記錄筆數：' + records.length + ' 筆
-
-' +
-    '請將同時下載的 JSON 檔（' + fname + '）附加到此信件後寄出。
-
-' +
-    '--- 備份資料（可忽略）---
-' + json
-  );
-  var gmailUrl = 'https://mail.google.com/mail/?view=cm&to=' + to + '&su=' + subject + '&body=' + body;
-  setTimeout(function(){ window.open(gmailUrl, '_blank'); }, 800);
-
-  ss('lastBackup', now.toISOString());
-  getBackupInfo();
-  showToast('✅ JSON 已下載，Gmail 即將開啟');
-}
-
-function doRestore(file){
-  if(!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e){
-    try {
-      var data = JSON.parse(e.target.result);
-      if(!data.version || !data.records){
-        showToast('❌ 檔案格式錯誤'); return;
-      }
-      if(data.students) { students = data.students; ss('students2', students); }
-      if(data.tags)     { tags = data.tags;         ss('tags2', tags); }
-      if(data.records)  { records = data.records;   ss('records2', records); }
-      drawGrid(); drawStuManage(); drawTagManage(); fillSelects();
-      ss('lastBackup', new Date().toISOString());
-      getBackupInfo();
-      showToast('✅ 還原成功！共 ' + records.length + ' 筆記錄');
-    } catch(err) {
-      showToast('❌ 還原失敗，請確認檔案正確');
-    }
-  };
-  reader.readAsText(file);
-}
-
-// Weekly backup reminder
-(function(){
-  var last = ls('lastBackup', null);
-  if(!last){
-    setTimeout(function(){
-      showToast('💡 建議定期備份資料到 Google Drive');
-    }, 3000);
-    return;
-  }
-  var daysSince = (Date.now() - new Date(last).getTime()) / 86400000;
-  if(daysSince >= 7){
-    setTimeout(function(){
-      showToast('📅 已超過一週未備份，請記得備份！');
-    }, 3000);
-  }
-})();
-
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
+// ═══════════════════════════════
+// DATA
+// ═══════════════════════════════
 var WD = ['日','一','二','三','四','五','六'];
-
-var DEFAULT_TAGS = [
-  {id:'t1',name:'積極參與',type:'pos'},{id:'t2',name:'主動發言',type:'pos'},
-  {id:'t3',name:'樂於助人',type:'pos'},{id:'t4',name:'優秀作業',type:'pos'},
-  {id:'t5',name:'違反紀律',type:'neg'},{id:'t6',name:'課堂干擾',type:'neg'},
-  {id:'t7',name:'未完成作業',type:'neg'},{id:'t8',name:'遲到',type:'neg'},
-  {id:'t9',name:'出席',type:'neu'},{id:'t10',name:'病假',type:'neu'},
-  {id:'t11',name:'請假',type:'neu'}
-];
 
 var CLASS_LIST = [
   {num:1,name:'吳品樺'},{num:2,name:'林沛盈'},{num:3,name:'林采蒨'},
@@ -366,564 +270,444 @@ var CLASS_LIST = [
   {num:26,name:'潘昭瑜'},{num:27,name:'鄭運謙'}
 ];
 
-function ls(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
-function ss(k,v){localStorage.setItem(k,JSON.stringify(v));}
+var DEFAULT_TAGS = [
+  {id:'t1',name:'積極參與',type:'pos'},{id:'t2',name:'主動發言',type:'pos'},
+  {id:'t3',name:'樂於助人',type:'pos'},{id:'t4',name:'優秀作業',type:'pos'},
+  {id:'t5',name:'違反紀律',type:'neg'},{id:'t6',name:'課堂干擾',type:'neg'},
+  {id:'t7',name:'未完成作業',type:'neg'},{id:'t8',name:'遲到',type:'neg'},
+  {id:'t9',name:'出席',type:'neu'},{id:'t10',name:'病假',type:'neu'},
+  {id:'t11',name:'請假',type:'neu'}
+];
 
-var students = ls('students2', null); if(!students || students.length===0){ students = CLASS_LIST; ss('students2', students); }
-var tags     = ls('tags2', null);     if(!tags     || tags.length===0)    { tags     = DEFAULT_TAGS;  ss('tags2', tags); }
-var records  = ls('records2', []);
+// Load from localStorage, fallback to defaults
+function loadData(key, fallback) {
+  try {
+    var raw = localStorage.getItem(key);
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch(e) {}
+  return fallback;
+}
+function saveData(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+}
 
-var modalStu = null;
-var selTags  = [];
+var students = loadData('edu_students', CLASS_LIST);
+var tags     = loadData('edu_tags', DEFAULT_TAGS);
+var records  = loadData('edu_records', []);
 
-// ── HEADER ──
-(function(){
-  var n=new Date();
-  document.getElementById('hWd').textContent='週'+WD[n.getDay()];
-  document.getElementById('hDt').textContent=n.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric'});
+// Persist defaults immediately
+saveData('edu_students', students);
+saveData('edu_tags', tags);
+saveData('edu_records', records);
+
+// ═══════════════════════════════
+// HEADER
+// ═══════════════════════════════
+(function() {
+  var n = new Date();
+  document.getElementById('hwd').textContent = '週' + WD[n.getDay()];
+  document.getElementById('hdt').textContent = n.toLocaleDateString('zh-TW', {year:'numeric',month:'long',day:'numeric'});
 })();
 
-// ── TABS ──
-function goTab(id){
-  ['record','list','stats','settings'].forEach(function(t){
-    document.getElementById('sec-'+t).classList.remove('on');
-    document.getElementById('tb-'+t).classList.remove('active');
+// ═══════════════════════════════
+// TABS
+// ═══════════════════════════════
+var TABS = ['home','list','stats','settings'];
+function goTab(id) {
+  TABS.forEach(function(t) {
+    document.getElementById('s-'+t).classList.remove('show');
+    document.getElementById('t-'+t).classList.remove('active');
   });
-  document.getElementById('sec-'+id).classList.add('on');
-  document.getElementById('tb-'+id).classList.add('active');
-  if(id==='record')  drawGrid();
-  if(id==='list')    drawList();
-  if(id==='stats')   { drawOverall(); drawTagStats(); drawStuStats(); }
-  if(id==='settings'){ drawStuManage(); drawTagManage(); getBackupInfo(); wireBackup(); }
+  document.getElementById('s-'+id).classList.add('show');
+  document.getElementById('t-'+id).classList.add('active');
+  if (id === 'home')     renderGrid();
+  if (id === 'list')     renderList();
+  if (id === 'stats')    { renderOverall(); renderTagStats(); renderStuStats(); }
+  if (id === 'settings') { renderStuManage(); renderTagManage(); renderBackupInfo(); }
 }
+document.getElementById('t-home').addEventListener('click', function(){ goTab('home'); });
+document.getElementById('t-list').addEventListener('click', function(){ goTab('list'); });
+document.getElementById('t-stats').addEventListener('click', function(){ goTab('stats'); });
+document.getElementById('t-settings').addEventListener('click', function(){ goTab('settings'); });
 
-// ── GRID ──
-function drawGrid(){
-  var g=document.getElementById('sGrid');
-  var today=new Date().toISOString().slice(0,10);
-  var todayCnt=0;
-  g.innerHTML='';
-  students.forEach(function(s){
-    var recs=records.filter(function(r){return r.stu===s.name;});
-    var hasPos=recs.some(function(r){return r.mt==='pos';});
-    var hasNeg=recs.some(function(r){return r.mt==='neg';});
-    var todayR=recs.filter(function(r){return r.ts.slice(0,10)===today;});
-    if(todayR.length) todayCnt++;
+// ═══════════════════════════════
+// GRID
+// ═══════════════════════════════
+function renderGrid() {
+  var grid = document.getElementById('sgrid');
+  var today = new Date().toISOString().slice(0,10);
+  var todayCnt = 0;
+  grid.innerHTML = '';
+  students.forEach(function(s) {
+    var recs = records.filter(function(r){ return r.stu === s.name; });
+    var hasPos = recs.some(function(r){ return r.mt === 'pos'; });
+    var hasNeg = recs.some(function(r){ return r.mt === 'neg'; });
+    if (recs.filter(function(r){ return r.ts.slice(0,10)===today; }).length) todayCnt++;
 
-    var div=document.createElement('div');
-    div.className='sblock'+(hasNeg?' gneg':hasPos?' gpos':'');
+    var card = document.createElement('div');
+    card.className = 'scard' + (hasNeg?' hasneg':hasPos?' haspos':'');
 
-    var numEl=document.createElement('div');
-    numEl.className='snum';
-    numEl.textContent=s.num;
+    var no = document.createElement('div'); no.className='sno'; no.textContent=s.num;
+    var dot = document.createElement('div'); dot.className='sdot';
+    var nm = document.createElement('div'); nm.className='sname'; nm.textContent=s.name;
+    var cnt = document.createElement('div'); cnt.className='scnt'; cnt.textContent=recs.length?recs.length+'筆':'—';
 
-    var dot=document.createElement('div');
-    dot.className='sdot';
-
-    var nameEl=document.createElement('div');
-    nameEl.className='sname';
-    nameEl.textContent=s.name;
-
-    var badge=document.createElement('div');
-    badge.className='sbadge';
-    badge.textContent=recs.length?recs.length+'筆':'—';
-
-    div.appendChild(numEl);
-    div.appendChild(dot);
-    div.appendChild(nameEl);
-    div.appendChild(badge);
-
-    (function(sname,snum){
-      div.addEventListener('click',function(){openModal(sname,snum);});
-    })(s.name,s.num);
-
-    g.appendChild(div);
+    card.appendChild(no); card.appendChild(dot); card.appendChild(nm); card.appendChild(cnt);
+    card.addEventListener('click', (function(sn, num){ return function(){ openModal(sn, num); }; })(s.name, s.num));
+    grid.appendChild(card);
   });
-  document.getElementById('todayCnt').textContent='今日已記錄 '+todayCnt+' 人';
+  document.getElementById('todaycnt').textContent = '今日已記錄 '+todayCnt+' 人';
 }
 
-// ── MODAL ──
-function openModal(name,num){
-  modalStu=name; selTags=[];
-  document.getElementById('mName').textContent=name;
-  document.getElementById('mSub').textContent='座號 '+num;
-  document.getElementById('mNote').value='';
-  var n=new Date();
-  var pad=function(x){return String(x).padStart(2,'0');};
-  document.getElementById('mDate').value=n.getFullYear()+'-'+pad(n.getMonth()+1)+'-'+pad(n.getDate())+'T'+pad(n.getHours())+':'+pad(n.getMinutes());
-  updateWdDisplay();
-  drawModalTags();
-  document.getElementById('overlay').classList.add('on');
-  document.body.style.overflow='hidden';
-}
-function updateWdDisplay(){
-  var v=document.getElementById('mDate').value;
-  var el=document.getElementById('mWdDisplay');
-  if(!v){el.textContent='';return;}
-  var d=new Date(v);
-  el.textContent='週'+WD[d.getDay()];
-}
-function closeModal(){
-  document.getElementById('overlay').classList.remove('on');
-  document.body.style.overflow='';
-  modalStu=null;
-}
-document.getElementById('overlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
-document.getElementById('cancelBtn').addEventListener('click',closeModal);
+// ═══════════════════════════════
+// MODAL
+// ═══════════════════════════════
+var curStu = null;
+var selTags = [];
 
-function drawModalTags(){
-  var wrap=document.getElementById('mTags');
-  wrap.innerHTML='';
-  tags.forEach(function(t){
-    var el=document.createElement('div');
-    el.className='btag '+t.type+(selTags.indexOf(t.id)>=0?' on':'');
-    el.textContent=t.name;
-    el.addEventListener('click',function(){
-      var i=selTags.indexOf(t.id);
-      if(i>=0) selTags.splice(i,1); else selTags.push(t.id);
-      drawModalTags();
-    });
+function openModal(name, num) {
+  curStu = name; selTags = [];
+  document.getElementById('mname').textContent = name;
+  document.getElementById('mno').textContent = '座號 ' + num;
+  document.getElementById('mnote').value = '';
+  var now = new Date();
+  function p(x){ return String(x).padStart(2,'0'); }
+  var dval = now.getFullYear()+'-'+p(now.getMonth()+1)+'-'+p(now.getDate())+'T'+p(now.getHours())+':'+p(now.getMinutes());
+  document.getElementById('mdate').value = dval;
+  document.getElementById('mwd').textContent = '週' + WD[now.getDay()];
+  renderModalTags();
+  document.getElementById('overlay').classList.add('show');
+}
+function closeModal() {
+  document.getElementById('overlay').classList.remove('show');
+  curStu = null; selTags = [];
+}
+document.getElementById('overlay').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+document.getElementById('btnCancel').addEventListener('click', closeModal);
+
+document.getElementById('mdate').addEventListener('input', function() {
+  var v = this.value;
+  if (!v) { document.getElementById('mwd').textContent=''; return; }
+  document.getElementById('mwd').textContent = '週' + WD[new Date(v).getDay()];
+});
+
+function renderModalTags() {
+  var wrap = document.getElementById('mtags');
+  wrap.innerHTML = '';
+  tags.forEach(function(t) {
+    var el = document.createElement('div');
+    el.className = 'tag ' + t.type + (selTags.indexOf(t.id)>=0?' sel':'');
+    el.textContent = t.name;
+    el.addEventListener('click', (function(tid){ return function() {
+      var i = selTags.indexOf(tid);
+      if (i>=0) selTags.splice(i,1); else selTags.push(tid);
+      renderModalTags();
+    }; })(t.id));
     wrap.appendChild(el);
   });
 }
 
-document.getElementById('saveBtn').addEventListener('click',function(){
-  if(!modalStu) return;
-  if(!selTags.length){showToast('請選擇至少一個行為標籤');return;}
-  var note=document.getElementById('mNote').value.trim();
-  var dv=document.getElementById('mDate').value;
-  var dt=dv?new Date(dv):new Date();
-  var mt='neu';
-  var hasneg=false,haspos=false;
-  selTags.forEach(function(id){
-    var t=tags.find(function(x){return x.id===id;});
-    if(t&&t.type==='neg') hasneg=true;
-    if(t&&t.type==='pos') haspos=true;
+document.getElementById('btnSave').addEventListener('click', function() {
+  if (!curStu) return;
+  if (!selTags.length) { showToast('請選擇至少一個行為標籤'); return; }
+  var note = document.getElementById('mnote').value.trim();
+  var dv = document.getElementById('mdate').value;
+  var dt = dv ? new Date(dv) : new Date();
+  var mt = 'neu';
+  selTags.forEach(function(id) {
+    var t = tags.find(function(x){ return x.id===id; });
+    if (t && t.type==='neg') mt='neg';
+    else if (t && t.type==='pos' && mt!=='neg') mt='pos';
   });
-  if(hasneg) mt='neg'; else if(haspos) mt='pos';
-  records.unshift({id:''+Date.now(),stu:modalStu,tags:selTags.slice(),note:note,ts:dt.toISOString(),mt:mt,wd:WD[dt.getDay()]});
-  ss('records2',records);
+  records.unshift({
+    id: 'r'+Date.now(),
+    stu: curStu, tags: selTags.slice(),
+    note: note, ts: dt.toISOString(),
+    mt: mt, wd: WD[dt.getDay()]
+  });
+  saveData('edu_records', records);
   closeModal();
-  drawGrid();
-  showToast('✅ 已儲存記錄');
+  renderGrid();
+  showToast('✅ 已儲存');
 });
 
-// ── LIST ──
-document.getElementById('fStu').addEventListener('change',drawList);
-document.getElementById('fType').addEventListener('change',drawList);
-document.getElementById('exportBtn').addEventListener('click',doExport);
-
-function drawList(){
-  var fs=document.getElementById('fStu').value;
-  var ft=document.getElementById('fType').value;
-  var recs=records.filter(function(r){
-    return (!fs||r.stu===fs)&&(!ft||r.mt===ft);
-  });
-  var el=document.getElementById('rList');
-  if(!recs.length){el.innerHTML='<div class="empty"><div class="ei">📭</div>暫無記錄</div>';return;}
-  var groups={};
-  recs.forEach(function(r){var d=r.ts.slice(0,10);if(!groups[d])groups[d]=[];groups[d].push(r);});
-  var dates=Object.keys(groups).sort(function(a,b){return b<a?-1:1;});
-  el.innerHTML='';
-  dates.forEach(function(date){
-    var lbl=document.createElement('div');
-    lbl.className='dglabel';
-    var d=new Date(date+'T00:00:00');
-    var today=new Date();today.setHours(0,0,0,0);
-    var diff=(today-d)/86400000;
-    var wd='週'+WD[d.getDay()];
-    if(diff<1) lbl.textContent='今天 · '+wd;
-    else if(diff<2) lbl.textContent='昨天 · '+wd;
-    else lbl.textContent=d.toLocaleDateString('zh-TW',{month:'long',day:'numeric'})+' · '+wd;
-    el.appendChild(lbl);
-    groups[date].forEach(function(r){el.appendChild(makeRecordEl(r));});
+// ═══════════════════════════════
+// LIST
+// ═══════════════════════════════
+function fillSelects() {
+  ['fstu','ststu'].forEach(function(id) {
+    var el = document.getElementById(id);
+    var prev = el.value;
+    var ph = id==='fstu'?'全部學生':'請選擇學生';
+    el.innerHTML = '<option value="">'+ph+'</option>';
+    students.forEach(function(s) {
+      var op = document.createElement('option');
+      op.value = s.name; op.textContent = s.name;
+      el.appendChild(op);
+    });
+    if (prev) el.value = prev;
   });
 }
 
-function makeRecordEl(r){
-  var div=document.createElement('div');
-  div.className='ritem '+r.mt;
-
-  var del=document.createElement('button');
-  del.className='rdel';
-  del.textContent='✕';
-  del.addEventListener('click',function(){
-    records=records.filter(function(x){return x.id!==r.id;});
-    ss('records2',records);
-    drawList();drawGrid();
-    showToast('已刪除');
+function renderList() {
+  var fs = document.getElementById('fstu').value;
+  var ft = document.getElementById('ftype').value;
+  var recs = records.filter(function(r){ return (!fs||r.stu===fs)&&(!ft||r.mt===ft); });
+  var el = document.getElementById('rlist');
+  if (!recs.length) { el.innerHTML='<div class="empty"><div class="emptyicon">📭</div>暫無記錄</div>'; return; }
+  var groups = {};
+  recs.forEach(function(r){ var d=r.ts.slice(0,10); if(!groups[d]) groups[d]=[]; groups[d].push(r); });
+  var dates = Object.keys(groups).sort(function(a,b){ return a<b?1:-1; });
+  el.innerHTML = '';
+  dates.forEach(function(date) {
+    var lbl = document.createElement('div'); lbl.className='dgroup';
+    var d = new Date(date+'T00:00:00');
+    var now = new Date(); now.setHours(0,0,0,0);
+    var diff = Math.round((now-d)/86400000);
+    var wd = '週'+WD[d.getDay()];
+    lbl.textContent = diff===0?'今天 · '+wd : diff===1?'昨天 · '+wd : d.toLocaleDateString('zh-TW',{month:'long',day:'numeric'})+' · '+wd;
+    el.appendChild(lbl);
+    groups[date].forEach(function(r){ el.appendChild(makeRecCard(r)); });
   });
+}
 
-  var meta=document.createElement('div');
-  meta.className='rmeta';
-  var nm=document.createElement('span');
-  nm.className='rname';nm.textContent=r.stu;
-  var tm=document.createElement('span');
-  tm.className='rtime';
-  var d=new Date(r.ts);
-  tm.textContent=d.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'})+'\n週'+(r.wd||WD[d.getDay()]);
-  tm.style.whiteSpace='pre';
-  meta.appendChild(nm);meta.appendChild(tm);
-
-  var tw=document.createElement('div');
-  tw.className='rtags';
-  r.tags.forEach(function(id){
-    var t=tags.find(function(x){return x.id===id;});
-    if(!t)return;
-    var sp=document.createElement('span');
-    sp.className='rtag '+t.type;
-    sp.textContent=t.name;
+function makeRecCard(r) {
+  var div = document.createElement('div'); div.className='rcard '+r.mt;
+  var del = document.createElement('button'); del.className='rdel'; del.textContent='✕';
+  del.addEventListener('click', (function(rid){ return function(){
+    records = records.filter(function(x){ return x.id!==rid; });
+    saveData('edu_records', records);
+    renderList(); renderGrid(); showToast('已刪除');
+  }; })(r.id));
+  var meta = document.createElement('div'); meta.className='rmeta';
+  var nm = document.createElement('div'); nm.className='rname'; nm.textContent=r.stu;
+  var tm = document.createElement('div'); tm.className='rtime';
+  var d = new Date(r.ts);
+  tm.textContent = d.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'})+'\n週'+(r.wd||WD[d.getDay()]);
+  meta.appendChild(nm); meta.appendChild(tm);
+  var tw = document.createElement('div'); tw.className='rtags';
+  r.tags.forEach(function(tid) {
+    var t = tags.find(function(x){ return x.id===tid; }); if(!t) return;
+    var sp = document.createElement('span'); sp.className='rtag '+t.type; sp.textContent=t.name;
     tw.appendChild(sp);
   });
-
-  div.appendChild(del);
-  div.appendChild(meta);
-  div.appendChild(tw);
-  if(r.note){
-    var nt=document.createElement('div');
-    nt.className='rnote';nt.textContent=r.note;
-    div.appendChild(nt);
-  }
+  div.appendChild(del); div.appendChild(meta); div.appendChild(tw);
+  if (r.note) { var nt=document.createElement('div'); nt.className='rnote'; nt.textContent=r.note; div.appendChild(nt); }
   return div;
 }
 
-// ── STATS ──
-function drawOverall(){
-  var tot=records.length;
-  var pos=records.filter(function(r){return r.mt==='pos';}).length;
-  var neg=records.filter(function(r){return r.mt==='neg';}).length;
-  var neu=records.filter(function(r){return r.mt==='neu';}).length;
-  var el=document.getElementById('ovStats');
-  el.innerHTML='';
-  function row(label,val,cls,pct,color){
-    var d=document.createElement('div');d.className='srow';
-    var inner=document.createElement('div');inner.style.flex='1';
-    var top=document.createElement('div');top.style.cssText='display:flex;justify-content:space-between;';
-    var sp=document.createElement('span');sp.textContent=label;
-    var sv=document.createElement('span');sv.className='sval '+cls;sv.textContent=val;
-    top.appendChild(sp);top.appendChild(sv);inner.appendChild(top);
-    if(color!==undefined){
-      var bw=document.createElement('div');bw.className='bwrap';
-      var b=document.createElement('div');b.className='bar';b.style.background=color;b.style.width=(pct||0)+'%';
-      bw.appendChild(b);inner.appendChild(bw);
-    }
-    d.appendChild(inner);el.appendChild(d);
+document.getElementById('fstu').addEventListener('change', renderList);
+document.getElementById('ftype').addEventListener('change', renderList);
+
+// ═══════════════════════════════
+// STATS
+// ═══════════════════════════════
+function renderOverall() {
+  var tot=records.length, pos=0, neg=0, neu=0, stus={};
+  records.forEach(function(r){ if(r.mt==='pos')pos++; else if(r.mt==='neg')neg++; else neu++; stus[r.stu]=1; });
+  var el=document.getElementById('ovStats'); el.innerHTML='';
+  function addRow(label,val,cls,pct,color){
+    var row=document.createElement('div'); row.className='statrow';
+    var inner=document.createElement('div'); inner.style.flex='1';
+    var top=document.createElement('div'); top.style.cssText='display:flex;justify-content:space-between;';
+    var l=document.createElement('span'); l.textContent=label;
+    var v=document.createElement('span'); v.className='statval '+cls; v.textContent=val;
+    top.appendChild(l); top.appendChild(v); inner.appendChild(top);
+    if(color){ var bw=document.createElement('div'); bw.className='barwrap'; var b=document.createElement('div'); b.className='bar'; b.style.background=color; b.style.width=(tot?pct/tot*100:0)+'%'; bw.appendChild(b); inner.appendChild(bw); }
+    row.appendChild(inner); el.appendChild(row);
   }
-  row('總記錄數',tot,'',undefined,undefined);
-  row('✅ 正向',pos,'sg',tot?pos/tot*100:0,'var(--green)');
-  row('⚠️ 負向',neg,'sr',tot?neg/tot*100:0,'var(--red)');
-  row('📌 中性',neu,'sb',tot?neu/tot*100:0,'var(--blue)');
-  var uniq={}; records.forEach(function(r){uniq[r.stu]=1;});
-  row('涵蓋學生',Object.keys(uniq).length+' 人','',undefined,undefined);
+  addRow('總記錄數', tot, ''); addRow('✅ 正向', pos,'g',pos,'var(--green)'); addRow('⚠️ 負向', neg,'r',neg,'var(--red)'); addRow('📌 中性', neu,'b',neu,'var(--blue)');
+  addRow('涵蓋學生', Object.keys(stus).length+' 人', '');
 }
 
-document.getElementById('stStu').addEventListener('change',drawStuStats);
-function drawStuStats(){
-  var s=document.getElementById('stStu').value;
-  var el=document.getElementById('stuStats');
-  el.innerHTML='';
-  if(!s)return;
+document.getElementById('ststu').addEventListener('change', renderStuStats);
+function renderStuStats() {
+  var s=document.getElementById('ststu').value;
+  var el=document.getElementById('stStats'); el.innerHTML='';
+  if(!s) return;
   var recs=records.filter(function(r){return r.stu===s;});
-  if(!recs.length){el.innerHTML='<div style="color:#aaa;font-size:13px;padding-top:8px">尚無記錄</div>';return;}
-  var pos=recs.filter(function(r){return r.mt==='pos';}).length;
-  var neg=recs.filter(function(r){return r.mt==='neg';}).length;
-  var neu=recs.filter(function(r){return r.mt==='neu';}).length;
-  var tc={};
-  recs.forEach(function(r){r.tags.forEach(function(id){tc[id]=(tc[id]||0)+1;});});
-  var rows=[
-    ['總記錄',recs.length,''],['✅ 正向',pos,'sg'],['⚠️ 負向',neg,'sr'],['📌 中性',neu,'sb']
-  ];
-  rows.forEach(function(rv){
-    var d=document.createElement('div');d.className='srow';
-    var sp=document.createElement('span');sp.textContent=rv[0];
-    var sv=document.createElement('span');sv.className='sval '+rv[2];sv.textContent=rv[1];
-    d.appendChild(sp);d.appendChild(sv);el.appendChild(d);
+  if(!recs.length){el.innerHTML='<div style="color:#ccc;font-size:13px;padding:8px 0;">尚無記錄</div>';return;}
+  var pos=0,neg=0,neu=0,tc={};
+  recs.forEach(function(r){if(r.mt==='pos')pos++;else if(r.mt==='neg')neg++;else neu++; r.tags.forEach(function(id){tc[id]=(tc[id]||0)+1;});});
+  [['總記錄',recs.length,''],['✅ 正向',pos,'g'],['⚠️ 負向',neg,'r'],['📌 中性',neu,'b']].forEach(function(rv){
+    var row=document.createElement('div'); row.className='statrow';
+    var a=document.createElement('span'); a.textContent=rv[0];
+    var b=document.createElement('span'); b.className='statval '+rv[2]; b.textContent=rv[1];
+    row.appendChild(a); row.appendChild(b); el.appendChild(row);
   });
-  var top=Object.entries(tc).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
-  if(top.length){
-    var h=document.createElement('div');h.style.cssText='margin-top:10px;font-size:12px;font-weight:700;margin-bottom:5px;color:#888;';h.textContent='常見行為標籤';el.appendChild(h);
-    top.forEach(function(kv){
-      var t=tags.find(function(x){return x.id===kv[0];});
-      if(!t)return;
-      var d=document.createElement('div');d.className='srow';
-      var sp=document.createElement('span');sp.className='rtag '+t.type;sp.textContent=t.name;
-      var sv=document.createElement('span');sv.className='sval';sv.style.fontSize='13px';sv.textContent=kv[1]+'次';
-      d.appendChild(sp);d.appendChild(sv);el.appendChild(d);
-    });
-  }
+  Object.entries(tc).sort(function(a,b){return b[1]-a[1];}).slice(0,5).forEach(function(kv){
+    var t=tags.find(function(x){return x.id===kv[0];}); if(!t)return;
+    var row=document.createElement('div'); row.className='statrow';
+    var a=document.createElement('span'); a.className='rtag '+t.type; a.textContent=t.name;
+    var b=document.createElement('span'); b.className='statval'; b.style.fontSize='13px'; b.textContent=kv[1]+'次';
+    row.appendChild(a); row.appendChild(b); el.appendChild(row);
+  });
 }
 
-function drawTagStats(){
+function renderTagStats() {
   var tc={};
   records.forEach(function(r){r.tags.forEach(function(id){tc[id]=(tc[id]||0)+1;});});
   var sorted=Object.entries(tc).sort(function(a,b){return b[1]-a[1];}).slice(0,10);
-  var el=document.getElementById('tagStats');el.innerHTML='';
-  if(!sorted.length){el.innerHTML='<div class="empty"><div class="ei">📭</div>暫無資料</div>';return;}
+  var el=document.getElementById('tagStats'); el.innerHTML='';
+  if(!sorted.length){el.innerHTML='<div class="empty"><div class="emptyicon">📊</div>尚無資料</div>';return;}
   var max=sorted[0][1];
   sorted.forEach(function(kv){
-    var t=tags.find(function(x){return x.id===kv[0];});if(!t)return;
-    var wrap=document.createElement('div');wrap.style.marginBottom='8px';
-    var top=document.createElement('div');top.style.cssText='display:flex;justify-content:space-between;margin-bottom:3px;';
-    var sp=document.createElement('span');sp.className='rtag '+t.type;sp.textContent=t.name;
-    var sv=document.createElement('span');sv.style.cssText='font-family:"Space Mono",monospace;font-size:12px;';sv.textContent=kv[1];
-    top.appendChild(sp);top.appendChild(sv);
-    var bw=document.createElement('div');bw.className='bwrap';
-    var b=document.createElement('div');b.className='bar';
-    b.style.background=t.type==='pos'?'var(--green)':t.type==='neg'?'var(--red)':'var(--blue)';
-    b.style.width=(kv[1]/max*100)+'%';
-    bw.appendChild(b);
-    wrap.appendChild(top);wrap.appendChild(bw);
-    el.appendChild(wrap);
+    var t=tags.find(function(x){return x.id===kv[0];}); if(!t)return;
+    var wrap=document.createElement('div'); wrap.style.marginBottom='8px';
+    var top=document.createElement('div'); top.style.cssText='display:flex;justify-content:space-between;margin-bottom:3px;';
+    var a=document.createElement('span'); a.className='rtag '+t.type; a.textContent=t.name;
+    var b=document.createElement('span'); b.style.cssText='font-family:"Space Mono",monospace;font-size:12px;'; b.textContent=kv[1];
+    top.appendChild(a); top.appendChild(b);
+    var bw=document.createElement('div'); bw.className='barwrap';
+    var bar=document.createElement('div'); bar.className='bar';
+    bar.style.background=t.type==='pos'?'var(--green)':t.type==='neg'?'var(--red)':'var(--blue)';
+    bar.style.width=(kv[1]/max*100)+'%'; bw.appendChild(bar);
+    wrap.appendChild(top); wrap.appendChild(bw); el.appendChild(wrap);
   });
 }
 
-// ── SETTINGS ──
-document.getElementById('addStuBtn').addEventListener('click',function(){
-  var n=document.getElementById('newStuName').value.trim();
+// ═══════════════════════════════
+// SETTINGS
+// ═══════════════════════════════
+function renderStuManage() {
+  var el=document.getElementById('stulist'); el.innerHTML='';
+  students.forEach(function(s){
+    var row=document.createElement('div'); row.className='mngrow';
+    var sp=document.createElement('span'); sp.style.fontSize='13px';
+    var no=document.createElement('span'); no.style.cssText='font-family:"Space Mono",monospace;font-size:9px;color:#ccc;margin-right:6px;'; no.textContent=s.num;
+    sp.appendChild(no); sp.appendChild(document.createTextNode(s.name));
+    var btn=document.createElement('button'); btn.className='btn btn-red btn-sm'; btn.textContent='移除';
+    btn.addEventListener('click', (function(sname){ return function(){
+      students=students.filter(function(x){return x.name!==sname;});
+      saveData('edu_students',students); renderStuManage(); renderGrid(); fillSelects();
+      showToast('已移除 '+sname);
+    }; })(s.name));
+    row.appendChild(sp); row.appendChild(btn); el.appendChild(row);
+  });
+}
+
+document.getElementById('btnAddStu').addEventListener('click', function(){
+  var n=document.getElementById('newstu').value.trim();
   if(!n){showToast('請輸入姓名');return;}
   if(students.some(function(s){return s.name===n;})){showToast('學生已存在');return;}
   var mx=students.reduce(function(m,s){return Math.max(m,s.num);},0);
   students.push({num:mx+1,name:n});
-  ss('students2',students);
-  document.getElementById('newStuName').value='';
-  drawStuManage();drawGrid();fillSelects();
-  showToast('已新增學生');
+  saveData('edu_students',students);
+  document.getElementById('newstu').value='';
+  renderStuManage(); renderGrid(); fillSelects();
+  showToast('已新增 '+n);
 });
 
-function drawStuManage(){
-  var el=document.getElementById('stuManage');el.innerHTML='';
-  students.forEach(function(s){
-    var row=document.createElement('div');row.className='mrow';
-    var sp=document.createElement('span');sp.style.fontSize='13px';
-    var num=document.createElement('span');num.style.cssText='font-family:"Space Mono",monospace;font-size:10px;color:#aaa;margin-right:6px;';num.textContent=s.num;
-    sp.appendChild(num);sp.appendChild(document.createTextNode(s.name));
-    var btn=document.createElement('button');btn.className='btn bred bsm';btn.textContent='移除';
-    (function(sname){
-      btn.addEventListener('click',function(){
-        students=students.filter(function(x){return x.name!==sname;});
-        ss('students2',students);
-        drawStuManage();drawGrid();fillSelects();
-      });
-    })(s.name);
-    row.appendChild(sp);row.appendChild(btn);el.appendChild(row);
+function renderTagManage() {
+  var el=document.getElementById('taglist'); el.innerHTML='';
+  tags.forEach(function(t){
+    var row=document.createElement('div'); row.className='mngrow';
+    var sp=document.createElement('span'); sp.className='rtag '+t.type; sp.textContent=t.name;
+    var btn=document.createElement('button'); btn.className='btn btn-red btn-sm'; btn.textContent='移除';
+    btn.addEventListener('click', (function(tid,tname){ return function(){
+      tags=tags.filter(function(x){return x.id!==tid;});
+      saveData('edu_tags',tags); renderTagManage();
+      showToast('已移除標籤');
+    }; })(t.id,t.name));
+    row.appendChild(sp); row.appendChild(btn); el.appendChild(row);
   });
 }
 
-document.getElementById('addTagBtn').addEventListener('click',function(){
-  var n=document.getElementById('newTagName').value.trim();
-  var tp=document.getElementById('newTagType').value;
+document.getElementById('btnAddTag').addEventListener('click', function(){
+  var n=document.getElementById('newtag').value.trim();
+  var tp=document.getElementById('newtagtype').value;
   if(!n){showToast('請輸入標籤名稱');return;}
   if(tags.some(function(t){return t.name===n;})){showToast('標籤已存在');return;}
   tags.push({id:'c'+Date.now(),name:n,type:tp});
-  ss('tags2',tags);
-  document.getElementById('newTagName').value='';
-  drawTagManage();
-  showToast('已新增標籤');
+  saveData('edu_tags',tags);
+  document.getElementById('newtag').value='';
+  renderTagManage(); showToast('已新增標籤');
 });
 
-function drawTagManage(){
-  var el=document.getElementById('tagManage');el.innerHTML='';
-  tags.forEach(function(t){
-    var row=document.createElement('div');row.className='mrow';
-    var sp=document.createElement('span');sp.className='rtag '+t.type;sp.textContent=t.name;
-    var btn=document.createElement('button');btn.className='btn bred bsm';btn.textContent='移除';
-    (function(tid,tname){
-      btn.addEventListener('click',function(){
-        tags=tags.filter(function(x){return x.id!==tid;});
-        ss('tags2',tags);
-        drawTagManage();
-        showToast('已移除標籤');
-      });
-    })(t.id,t.name);
-    row.appendChild(sp);row.appendChild(btn);el.appendChild(row);
-  });
-}
-
-document.getElementById('clearBtn').addEventListener('click',function(){
-
-  records=[];ss('records2',records);
-  drawList();drawGrid();drawOverall();drawTagStats();
-  showToast('所有記錄已清除');
+document.getElementById('btnClear').addEventListener('click', function(){
+  records=[]; saveData('edu_records',records);
+  renderGrid(); showToast('已清除所有記錄');
 });
 
-// ── SELECTS ──
-function fillSelects(){
-  ['fStu','stStu'].forEach(function(id){
-    var el=document.getElementById(id);
-    var prev=el.value;
-    var ph=id==='fStu'?'全部學生':'請選擇學生';
-    el.innerHTML='<option value="">'+ph+'</option>';
-    students.forEach(function(s){
-      var op=document.createElement('option');op.value=s.name;op.textContent=s.name;el.appendChild(op);
-    });
-    if(prev)el.value=prev;
-  });
+// ═══════════════════════════════
+// BACKUP / RESTORE
+// ═══════════════════════════════
+function renderBackupInfo() {
+  var el=document.getElementById('lastbackup');
+  var last=localStorage.getItem('edu_lastbackup');
+  if(last){ var d=new Date(last); el.textContent='上次備份：'+d.toLocaleDateString('zh-TW')+' '+d.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'}); }
+  else el.textContent='尚未備份';
 }
 
-// ── EXPORT ──
-function doExport(){
-  if(!records.length){showToast('沒有資料可匯出');return;}
-  var rows=[['日期','星期','時間','學生','行為標籤','類型','備註']];
-  records.forEach(function(r){
-    var d=new Date(r.ts);
-    rows.push([
-      d.toLocaleDateString('zh-TW'),
-      '週'+(r.wd||WD[d.getDay()]),
-      d.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'}),
-      r.stu,
-      r.tags.map(function(id){var t=tags.find(function(x){return x.id===id;});return t?t.name:'';}).filter(Boolean).join('、'),
-      r.mt==='pos'?'正向':r.mt==='neg'?'負向':'中性',
-      r.note||''
-    ]);
-  });
-  var ws=XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols']=[{wch:12},{wch:6},{wch:7},{wch:10},{wch:30},{wch:6},{wch:30}];
-  var wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,'行為記錄');
-  var s2=[['學生','總記錄','正向','負向','中性']];
-  var seen={};
-  records.forEach(function(r){if(!seen[r.stu])seen[r.stu]=[];seen[r.stu].push(r);});
-  Object.keys(seen).forEach(function(name){
-    var rr=seen[name];
-    s2.push([name,rr.length,rr.filter(function(x){return x.mt==='pos';}).length,rr.filter(function(x){return x.mt==='neg';}).length,rr.filter(function(x){return x.mt==='neu';}).length]);
-  });
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(s2),'學生統計');
-  XLSX.writeFile(wb,'學生行為記錄_'+new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')+'.xlsx');
-  showToast('✅ Excel 已匯出');
-}
+document.getElementById('btnBackup').addEventListener('click', function(){
+  var now=new Date();
+  function p(x){return String(x).padStart(2,'0');}
+  var dateStr=now.getFullYear()+p(now.getMonth()+1)+p(now.getDate());
+  var dateLabel=now.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric'});
+  var data={version:2,exportedAt:now.toISOString(),students:students,tags:tags,records:records};
+  var json=JSON.stringify(data,null,2);
+  var fname='學生記錄備份_'+dateStr+'.json';
+  var blob=new Blob([json],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download=fname;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  var to='coolcooljac@gmail.com';
+  var subj=encodeURIComponent('【學生行為記錄】備份 '+dateLabel+' 週'+WD[now.getDay()]);
+  var body=encodeURIComponent('備份時間：'+dateLabel+'\n學生：'+students.length+'人　記錄：'+records.length+'筆\n\n請將下載的 '+fname+' 附加到此信件後寄出。');
+  setTimeout(function(){window.open('https://mail.google.com/mail/?view=cm&to='+to+'&su='+subj+'&body='+body,'_blank');},600);
+  localStorage.setItem('edu_lastbackup',now.toISOString());
+  renderBackupInfo();
+  showToast('✅ 備份下載中，Gmail 即將開啟');
+});
 
-// ── TOAST ──
-function showToast(msg){
-  var el=document.getElementById('toast');
-  el.textContent=msg;el.classList.add('on');
-  setTimeout(function(){el.classList.remove('on');},2000);
-}
-
-// ── INIT ──
-fillSelects();
-drawGrid();
-drawStuManage();
-drawTagManage();
-getBackupInfo();
-
-
-var backupWired = false;
-function wireBackup(){
-  if(backupWired) return;
-  backupWired = true;
-  document.getElementById('backupBtn').addEventListener('click', doBackup);
-  document.getElementById('restoreFile').addEventListener('change', function(){
-    doRestore(this.files[0]);
-    this.value = '';
-  });
-}
-
-// ── BACKUP & RESTORE ──
-function getBackupInfo(){
-  var last = ls('lastBackup', null);
-  var el = document.getElementById('backupInfo');
-  if(!el) return;
-  if(last){
-    var d = new Date(last);
-    el.textContent = '上次備份：' + d.toLocaleDateString('zh-TW') + ' ' + d.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
-  } else {
-    el.textContent = '尚未備份';
-  }
-}
-
-function doBackup(){
-  var now = new Date();
-  var pad = function(x){return String(x).padStart(2,'0');};
-  var dateStr = now.getFullYear() + pad(now.getMonth()+1) + pad(now.getDate());
-  var dateLabel = now.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric'});
-  var weekday = '週' + WD[now.getDay()];
-
-  var data = {
-    version: 1,
-    exportedAt: now.toISOString(),
-    students: students,
-    tags: tags,
-    records: records
-  };
-  var json = JSON.stringify(data, null, 2);
-
-  // 1. Download JSON file
-  var blob = new Blob([json], {type:'application/json'});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  var fname = '學生記錄備份_' + dateStr + '.json';
-  a.href = url; a.download = fname;
-  document.body.appendChild(a); a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-
-  // 2. Open Gmail compose with pre-filled content
-  var to = 'coolcooljac@gmail.com';
-  var subject = encodeURIComponent('【學生行為記錄】備份 ' + dateLabel + ' ' + weekday);
-  var body = encodeURIComponent(
-    '學生行為記錄備份
-' +
-    '備份時間：' + dateLabel + ' ' + weekday + '
-' +
-    '學生人數：' + students.length + ' 人
-' +
-    '記錄筆數：' + records.length + ' 筆
-
-' +
-    '請將同時下載的 JSON 檔（' + fname + '）附加到此信件後寄出。
-
-' +
-    '--- 備份資料（可忽略）---
-' + json
-  );
-  var gmailUrl = 'https://mail.google.com/mail/?view=cm&to=' + to + '&su=' + subject + '&body=' + body;
-  setTimeout(function(){ window.open(gmailUrl, '_blank'); }, 800);
-
-  ss('lastBackup', now.toISOString());
-  getBackupInfo();
-  showToast('✅ JSON 已下載，Gmail 即將開啟');
-}
-
-function doRestore(file){
-  if(!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e){
-    try {
-      var data = JSON.parse(e.target.result);
-      if(!data.version || !data.records){
-        showToast('❌ 檔案格式錯誤'); return;
-      }
-      if(data.students) { students = data.students; ss('students2', students); }
-      if(data.tags)     { tags = data.tags;         ss('tags2', tags); }
-      if(data.records)  { records = data.records;   ss('records2', records); }
-      drawGrid(); drawStuManage(); drawTagManage(); fillSelects();
-      ss('lastBackup', new Date().toISOString());
-      getBackupInfo();
-      showToast('✅ 還原成功！共 ' + records.length + ' 筆記錄');
-    } catch(err) {
-      showToast('❌ 還原失敗，請確認檔案正確');
-    }
+document.getElementById('fileRestore').addEventListener('change', function(){
+  var file=this.files[0]; if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=JSON.parse(e.target.result);
+      if(!data.records){showToast('❌ 檔案格式錯誤');return;}
+      if(data.students){students=data.students;saveData('edu_students',students);}
+      if(data.tags){tags=data.tags;saveData('edu_tags',tags);}
+      records=data.records;saveData('edu_records',records);
+      renderGrid();renderStuManage();renderTagManage();fillSelects();
+      localStorage.setItem('edu_lastbackup',new Date().toISOString());
+      renderBackupInfo();
+      showToast('✅ 還原成功！'+records.length+'筆記錄');
+    }catch(err){showToast('❌ 還原失敗');}
   };
   reader.readAsText(file);
-}
+  this.value='';
+});
 
-// Weekly backup reminder
+// Weekly reminder
 (function(){
-  var last = ls('lastBackup', null);
-  if(!last){
-    setTimeout(function(){
-      showToast('💡 建議定期備份資料到 Google Drive');
-    }, 3000);
-    return;
-  }
-  var daysSince = (Date.now() - new Date(last).getTime()) / 86400000;
-  if(daysSince >= 7){
-    setTimeout(function(){
-      showToast('📅 已超過一週未備份，請記得備份！');
-    }, 3000);
+  var last=localStorage.getItem('edu_lastbackup');
+  if(!last||((Date.now()-new Date(last).getTime())/86400000>=7)){
+    setTimeout(function(){showToast('💡 記得定期備份資料！');},2000);
   }
 })();
 
+// ═══════════════════════════════
+// TOAST
+// ═══════════════════════════════
+function showToast(msg) {
+  var el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(function(){el.classList.remove('show');},2200);
+}
+
+// ═══════════════════════════════
+// INIT
+// ═══════════════════════════════
+fillSelects();
+renderGrid();
+renderStuManage();
+renderTagManage();
+renderBackupInfo();
 </script>
 </body>
 </html>
