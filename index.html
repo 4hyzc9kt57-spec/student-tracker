@@ -369,8 +369,8 @@ var CLASS_LIST = [
 function ls(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
 function ss(k,v){localStorage.setItem(k,JSON.stringify(v));}
 
-var students = ls('students2', CLASS_LIST);
-var tags     = ls('tags2', DEFAULT_TAGS);
+var students = ls('students2', null); if(!students || students.length===0){ students = CLASS_LIST; ss('students2', students); }
+var tags     = ls('tags2', null);     if(!tags     || tags.length===0)    { tags     = DEFAULT_TAGS;  ss('tags2', tags); }
 var records  = ls('records2', []);
 
 var modalStu = null;
