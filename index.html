@@ -153,6 +153,7 @@ input:focus,select:focus{outline:none;border-color:var(--blue);}
       <div class="ctitle" style="margin-bottom:0;">學生列表</div>
       <div id="todaycnt" style="font-size:11px;color:#aaa;font-family:'Space Mono',monospace;"></div>
     </div>
+    <button class="btn btn-outline" id="btnBatch" style="margin-top:10px;font-size:13px;padding:9px;">⚡ 批次輸入</button>
   </div>
   <div class="grid" id="sgrid"></div>
 </div>
@@ -249,6 +250,60 @@ input:focus,select:focus{outline:none;border-color:var(--blue);}
   </div>
 </div>
 
+
+<!-- EDIT MODAL -->
+<div class="overlay" id="editOverlay">
+  <div class="modal" id="editModal">
+    <div class="drag"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+      <div class="mstudent" id="editName"></div>
+      <div style="font-size:11px;color:#aaa;font-family:'Space Mono',monospace;">✏️ 修改記錄</div>
+    </div>
+    <div class="mno" id="editNo"></div>
+    <div class="mlabel">行為標籤（可複選）</div>
+    <div class="tagrow" id="editTags"></div>
+    <div class="mlabel">補充說明</div>
+    <textarea id="editNote" placeholder="描述具體情況…"></textarea>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <div class="mlabel" style="margin-bottom:0;">日期時間</div>
+      <div class="wdshow" id="editWd"></div>
+    </div>
+    <input type="datetime-local" id="editDate">
+    <div class="btnrow">
+      <button class="btn btn-outline" id="btnEditCancel">取消</button>
+      <button class="btn btn-dark" id="btnEditSave">儲存修改</button>
+    </div>
+  </div>
+</div>
+
+<!-- BATCH MODAL -->
+<div class="overlay" id="batchOverlay">
+  <div class="modal">
+    <div class="drag"></div>
+    <div class="mstudent">⚡ 批次輸入</div>
+    <div class="mno" style="margin-bottom:16px;">同一件事，快速記錄多位學生</div>
+
+    <div class="mlabel">輸入描述（可包含座號）</div>
+    <textarea id="batchInput" placeholder="例如：英文課聊天，1，5，20號&#10;或：違反紀律 3 8 15" style="min-height:80px;"></textarea>
+
+    <div class="mlabel">解析到的學生</div>
+    <div id="batchParsed" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;min-height:32px;"></div>
+
+    <div class="mlabel">行為標籤（可複選）</div>
+    <div class="tagrow" id="batchTags"></div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <div class="mlabel" style="margin-bottom:0;">日期時間</div>
+      <div class="wdshow" id="batchWd"></div>
+    </div>
+    <input type="datetime-local" id="batchDate">
+
+    <div class="btnrow">
+      <button class="btn btn-outline" id="btnBatchCancel">取消</button>
+      <button class="btn btn-dark" id="btnBatchSave">批次儲存</button>
+    </div>
+  </div>
+</div>
 <div id="toast"></div>
 
 <script>
@@ -475,26 +530,56 @@ function renderList() {
 
 function makeRecCard(r) {
   var div = document.createElement('div'); div.className='rcard '+r.mt;
+  div.style.cursor = 'pointer';
+
+  // Long press to edit
+  var pressTimer = null;
+  div.addEventListener('touchstart', (function(rid){ return function(){
+    pressTimer = setTimeout(function(){ openEditModal(rid); }, 600);
+  }; })(r.id));
+  div.addEventListener('touchend', function(){ clearTimeout(pressTimer); });
+  div.addEventListener('touchmove', function(){ clearTimeout(pressTimer); });
+
   var del = document.createElement('button'); del.className='rdel'; del.textContent='✕';
-  del.addEventListener('click', (function(rid){ return function(){
+  del.addEventListener('click', (function(rid){ return function(e){
+    e.stopPropagation();
     records = records.filter(function(x){ return x.id!==rid; });
     saveData('edu_records', records);
     renderList(); renderGrid(); showToast('已刪除');
   }; })(r.id));
+
   var meta = document.createElement('div'); meta.className='rmeta';
   var nm = document.createElement('div'); nm.className='rname'; nm.textContent=r.stu;
   var tm = document.createElement('div'); tm.className='rtime';
   var d = new Date(r.ts);
   tm.textContent = d.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'})+'\n週'+(r.wd||WD[d.getDay()]);
   meta.appendChild(nm); meta.appendChild(tm);
+
   var tw = document.createElement('div'); tw.className='rtags';
   r.tags.forEach(function(tid) {
     var t = tags.find(function(x){ return x.id===tid; }); if(!t) return;
     var sp = document.createElement('span'); sp.className='rtag '+t.type; sp.textContent=t.name;
     tw.appendChild(sp);
   });
+
   div.appendChild(del); div.appendChild(meta); div.appendChild(tw);
   if (r.note) { var nt=document.createElement('div'); nt.className='rnote'; nt.textContent=r.note; div.appendChild(nt); }
+
+  // Show edit timestamp if edited
+  if (r.editedAt) {
+    var ed = new Date(r.editedAt);
+    var etxt = document.createElement('div');
+    etxt.style.cssText = 'font-size:10px;color:#bbb;margin-top:5px;font-family:"Space Mono",monospace;';
+    etxt.textContent = '✏️ 修改於 ' + ed.toLocaleDateString('zh-TW') + ' 週'+(r.editedWd||WD[ed.getDay()])+' ' + ed.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
+    div.appendChild(etxt);
+  }
+
+  // Long press hint
+  var hint = document.createElement('div');
+  hint.style.cssText = 'font-size:10px;color:#ddd;margin-top:3px;text-align:right;';
+  hint.textContent = '長按修改';
+  div.appendChild(hint);
+
   return div;
 }
 
@@ -731,6 +816,218 @@ document.getElementById('btnExcel').addEventListener('click', function(){
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
   showToast('✅ CSV 已下載（可用 Excel 開啟）');
+});
+
+
+// ═══════════════════════════════
+// EDIT RECORD
+// ═══════════════════════════════
+var editRecId = null;
+var editSelTags = [];
+
+function openEditModal(rid) {
+  var r = records.find(function(x){ return x.id === rid; });
+  if (!r) return;
+  editRecId = rid;
+  editSelTags = r.tags.slice();
+  document.getElementById('editName').textContent = r.stu;
+  // find seat number
+  var s = students.find(function(x){ return x.name === r.stu; });
+  document.getElementById('editNo').textContent = s ? '座號 ' + s.num : '';
+  document.getElementById('editNote').value = r.note || '';
+  // set date
+  var d = new Date(r.ts);
+  function p(x){ return String(x).padStart(2,'0'); }
+  document.getElementById('editDate').value = d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes());
+  document.getElementById('editWd').textContent = '週' + WD[d.getDay()];
+  renderEditTags();
+  document.getElementById('editOverlay').classList.add('show');
+}
+
+function closeEditModal() {
+  document.getElementById('editOverlay').classList.remove('show');
+  editRecId = null; editSelTags = [];
+}
+
+document.getElementById('editOverlay').addEventListener('click', function(e){ if(e.target===this) closeEditModal(); });
+document.getElementById('btnEditCancel').addEventListener('click', closeEditModal);
+
+document.getElementById('editDate').addEventListener('input', function(){
+  var v = this.value;
+  if (!v) { document.getElementById('editWd').textContent=''; return; }
+  document.getElementById('editWd').textContent = '週' + WD[new Date(v).getDay()];
+});
+
+function renderEditTags() {
+  var wrap = document.getElementById('editTags');
+  wrap.innerHTML = '';
+  tags.forEach(function(t) {
+    var el = document.createElement('div');
+    el.className = 'tag ' + t.type + (editSelTags.indexOf(t.id)>=0?' sel':'');
+    el.textContent = t.name;
+    el.addEventListener('click', (function(tid){ return function(){
+      var i = editSelTags.indexOf(tid);
+      if (i>=0) editSelTags.splice(i,1); else editSelTags.push(tid);
+      renderEditTags();
+    }; })(t.id));
+    wrap.appendChild(el);
+  });
+}
+
+document.getElementById('btnEditSave').addEventListener('click', function(){
+  if (!editRecId) return;
+  if (!editSelTags.length) { showToast('請選擇至少一個行為標籤'); return; }
+  var idx = records.findIndex(function(x){ return x.id === editRecId; });
+  if (idx === -1) return;
+  var r = records[idx];
+  var note = document.getElementById('editNote').value.trim();
+  var dv = document.getElementById('editDate').value;
+  var dt = dv ? new Date(dv) : new Date(r.ts);
+  var mt = 'neu';
+  editSelTags.forEach(function(id){
+    var t = tags.find(function(x){ return x.id===id; });
+    if (t && t.type==='neg') mt='neg';
+    else if (t && t.type==='pos' && mt!=='neg') mt='pos';
+  });
+  var editedAt = new Date();
+  records[idx] = {
+    id: r.id, stu: r.stu,
+    tags: editSelTags.slice(),
+    note: note,
+    ts: dt.toISOString(),
+    mt: mt,
+    wd: WD[dt.getDay()],
+    editedAt: editedAt.toISOString(),
+    editedWd: WD[editedAt.getDay()]
+  };
+  saveData('edu_records', records);
+  closeEditModal();
+  renderList();
+  showToast('✅ 已修改記錄');
+});
+
+
+// ═══════════════════════════════
+// BATCH INPUT
+// ═══════════════════════════════
+var batchSelTags = [];
+var batchParsedStudents = [];
+
+function openBatchModal() {
+  batchSelTags = []; batchParsedStudents = [];
+  document.getElementById('batchInput').value = '';
+  document.getElementById('batchParsed').innerHTML = '';
+  renderBatchTags();
+  var now = new Date();
+  function p(x){ return String(x).padStart(2,'0'); }
+  document.getElementById('batchDate').value = now.getFullYear()+'-'+p(now.getMonth()+1)+'-'+p(now.getDate())+'T'+p(now.getHours())+':'+p(now.getMinutes());
+  document.getElementById('batchWd').textContent = '週'+WD[now.getDay()];
+  document.getElementById('batchOverlay').classList.add('show');
+}
+function closeBatchModal() {
+  document.getElementById('batchOverlay').classList.remove('show');
+  batchSelTags = []; batchParsedStudents = [];
+}
+document.getElementById('batchOverlay').addEventListener('click', function(e){ if(e.target===this) closeBatchModal(); });
+document.getElementById('btnBatchCancel').addEventListener('click', closeBatchModal);
+document.getElementById('btnBatch').addEventListener('click', openBatchModal);
+
+document.getElementById('batchDate').addEventListener('input', function(){
+  var v = this.value;
+  document.getElementById('batchWd').textContent = v ? '週'+WD[new Date(v).getDay()] : '';
+});
+
+// Parse input text to find student numbers
+document.getElementById('batchInput').addEventListener('input', function(){
+  var text = this.value;
+  // Extract all numbers from the text
+  var nums = [];
+  var matches = text.match(/\d+/g);
+  if (matches) {
+    matches.forEach(function(m){
+      var n = parseInt(m);
+      nums.push(n);
+    });
+  }
+  // Find students matching those numbers
+  batchParsedStudents = [];
+  nums.forEach(function(n){
+    var s = students.find(function(x){ return x.num === n; });
+    if (s && batchParsedStudents.indexOf(s.name) === -1) {
+      batchParsedStudents.push(s.name);
+    }
+  });
+  renderBatchParsed();
+});
+
+function renderBatchParsed() {
+  var el = document.getElementById('batchParsed');
+  el.innerHTML = '';
+  if (!batchParsedStudents.length) {
+    el.innerHTML = '<span style="color:#ccc;font-size:12px;">尚未偵測到學生座號</span>';
+    return;
+  }
+  batchParsedStudents.forEach(function(name){
+    var s = students.find(function(x){ return x.name===name; });
+    var chip = document.createElement('div');
+    chip.style.cssText = 'background:var(--ink);color:#fff;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;';
+    chip.textContent = (s?s.num+'號 ':'') + name;
+    // tap to remove
+    var x = document.createElement('span');
+    x.textContent = '✕'; x.style.cssText='cursor:pointer;opacity:0.6;font-size:11px;';
+    x.addEventListener('click', (function(n){ return function(){
+      batchParsedStudents = batchParsedStudents.filter(function(x){ return x!==n; });
+      renderBatchParsed();
+    }; })(name));
+    chip.appendChild(x);
+    el.appendChild(chip);
+  });
+}
+
+function renderBatchTags() {
+  var wrap = document.getElementById('batchTags');
+  wrap.innerHTML = '';
+  tags.forEach(function(t){
+    var el = document.createElement('div');
+    el.className = 'tag '+t.type+(batchSelTags.indexOf(t.id)>=0?' sel':'');
+    el.textContent = t.name;
+    el.addEventListener('click', (function(tid){ return function(){
+      var i = batchSelTags.indexOf(tid);
+      if(i>=0) batchSelTags.splice(i,1); else batchSelTags.push(tid);
+      renderBatchTags();
+    }; })(t.id));
+    wrap.appendChild(el);
+  });
+}
+
+document.getElementById('btnBatchSave').addEventListener('click', function(){
+  if (!batchParsedStudents.length) { showToast('請輸入包含座號的描述'); return; }
+  if (!batchSelTags.length) { showToast('請選擇至少一個行為標籤'); return; }
+  var note = document.getElementById('batchInput').value.trim();
+  var dv = document.getElementById('batchDate').value;
+  var dt = dv ? new Date(dv) : new Date();
+  var mt = 'neu';
+  batchSelTags.forEach(function(id){
+    var t = tags.find(function(x){ return x.id===id; });
+    if(t && t.type==='neg') mt='neg';
+    else if(t && t.type==='pos' && mt!=='neg') mt='pos';
+  });
+  var now = Date.now();
+  batchParsedStudents.forEach(function(name, i){
+    records.unshift({
+      id: 'r'+(now+i),
+      stu: name,
+      tags: batchSelTags.slice(),
+      note: note,
+      ts: dt.toISOString(),
+      mt: mt,
+      wd: WD[dt.getDay()]
+    });
+  });
+  saveData('edu_records', records);
+  closeBatchModal();
+  renderGrid();
+  showToast('✅ 已為 '+batchParsedStudents.length+' 位學生建立記錄');
 });
 
 // ═══════════════════════════════
