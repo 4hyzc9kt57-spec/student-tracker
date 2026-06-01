@@ -247,6 +247,9 @@ input:focus,select:focus{outline:none;border-color:var(--blue);}
       <button class="btn btn-outline" id="btnCancel">取消</button>
       <button class="btn btn-dark" id="btnSave">儲存記錄</button>
     </div>
+
+    <!-- Student history -->
+    <div id="mHistory" style="margin-top:20px;"></div>
   </div>
 </div>
 
@@ -433,6 +436,7 @@ function openModal(name, num) {
   document.getElementById('mdate').value = dval;
   document.getElementById('mwd').textContent = '週' + WD[now.getDay()];
   renderModalTags();
+  renderModalHistory(name);
   document.getElementById('overlay').classList.add('show');
 }
 function closeModal() {
@@ -1029,6 +1033,95 @@ document.getElementById('btnBatchSave').addEventListener('click', function(){
   renderGrid();
   showToast('✅ 已為 '+batchParsedStudents.length+' 位學生建立記錄');
 });
+
+
+// ═══════════════════════════════
+// STUDENT HISTORY IN MODAL
+// ═══════════════════════════════
+function renderModalHistory(name) {
+  var el = document.getElementById('mHistory');
+  var recs = records.filter(function(r){ return r.stu === name; });
+  if (!recs.length) {
+    el.innerHTML = '';
+    return;
+  }
+  // Sort by date desc
+  recs = recs.slice().sort(function(a,b){ return a.ts < b.ts ? 1 : -1; });
+
+  var wrap = document.createElement('div');
+
+  var title = document.createElement('div');
+  title.style.cssText = 'font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#bbb;margin-bottom:10px;padding-top:4px;border-top:1px solid var(--border);';
+  title.textContent = '📋 歷史記錄（' + recs.length + ' 筆）';
+  wrap.appendChild(title);
+
+  recs.forEach(function(r) {
+    var card = document.createElement('div');
+    card.style.cssText = 'background:#f8f5ef;border:1px solid var(--border);border-left:3px solid var(--border);border-radius:8px;padding:9px 12px;margin-bottom:8px;';
+    if (r.mt==='pos') card.style.borderLeftColor = 'var(--green)';
+    else if (r.mt==='neg') card.style.borderLeftColor = 'var(--red)';
+    else card.style.borderLeftColor = 'var(--blue)';
+
+    var d = new Date(r.ts);
+    var meta = document.createElement('div');
+    meta.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;';
+    var dateEl = document.createElement('span');
+    dateEl.style.cssText = 'font-family:"Space Mono",monospace;font-size:10px;color:#aaa;';
+    dateEl.textContent = d.toLocaleDateString('zh-TW',{month:'numeric',day:'numeric'}) + ' 週'+(r.wd||WD[d.getDay()])+' '+d.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
+    meta.appendChild(dateEl);
+    var metaRight = document.createElement('div');
+    metaRight.style.cssText = 'display:flex;align-items:center;gap:6px;';
+    if (r.editedAt) {
+      var edbadge = document.createElement('span');
+      edbadge.style.cssText = 'font-size:9px;color:#ccc;font-family:"Space Mono",monospace;';
+      edbadge.textContent = '✏️已修改';
+      metaRight.appendChild(edbadge);
+    }
+    var editBtn = document.createElement('button');
+    editBtn.textContent = '修改';
+    editBtn.style.cssText = 'font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;border:none;background:var(--ink);color:#fff;cursor:pointer;font-family:"Noto Sans TC",sans-serif;';
+    editBtn.addEventListener('click', (function(rid){ return function(e){
+      e.stopPropagation();
+      closeModal();
+      setTimeout(function(){ openEditModal(rid); }, 200);
+    }; })(r.id));
+    metaRight.appendChild(editBtn);
+    meta.appendChild(metaRight);
+    card.appendChild(meta);
+
+    var tw = document.createElement('div');
+    tw.style.cssText = 'display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px;';
+    r.tags.forEach(function(tid){
+      var t = tags.find(function(x){ return x.id===tid; }); if(!t)return;
+      var sp = document.createElement('span'); sp.className='rtag '+t.type; sp.textContent=t.name;
+      tw.appendChild(sp);
+    });
+    card.appendChild(tw);
+
+    if (r.note) {
+      var nt = document.createElement('div');
+      nt.style.cssText = 'font-size:12px;color:#777;line-height:1.5;';
+      nt.textContent = r.note;
+      card.appendChild(nt);
+    }
+
+    // Long press to edit this record
+    var pressTimer = null;
+    card.addEventListener('touchstart', (function(rid){ return function(){
+      pressTimer = setTimeout(function(){
+        closeModal();
+        setTimeout(function(){ openEditModal(rid); }, 200);
+      }, 600);
+    }; })(r.id));
+    card.addEventListener('touchend', function(){ clearTimeout(pressTimer); });
+    card.addEventListener('touchmove', function(){ clearTimeout(pressTimer); });
+
+    wrap.appendChild(card);
+  });
+
+  el.innerHTML = '';
+  el.appendChild(wrap);
+}
 
 // ═══════════════════════════════
 // INIT
